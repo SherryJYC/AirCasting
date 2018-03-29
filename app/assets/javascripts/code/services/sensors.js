@@ -2,11 +2,13 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
   var Sensors = function() {
     spinner.show();
     $http.get('/api/sensors', {cache: true}).success(_(this.onSensorsFetch).bind(this));
+
     this.availableParameters = {};
     this.sensors = {};
     this.tmpSensorId = undefined;
     this.shouldInitSelected = false;
     this.defaultSensor = "Particulate Matter-AirBeam2-PM2.5 (µg/m³)"
+    this.defaultParameter = "Particulate Matter"
   };
   Sensors.prototype = {
     onSensorsFetch : function(data, status, headers, config) {
@@ -60,9 +62,11 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
           }});
         }
       }
+
+      params.get('data').parameterId = this.defaultParameter;
     },
-    get: function(parameter) {
-      return _(this.sensors).filter(function(sensor) {  });
+    get: function() {
+      return _(this.sensors).filter(function(sensor) { sensor["measurement_type"] == "Particulate Matter" });
     },
     getParameters: function() {
       console.log("returning: " + JSON.stringify(this.availableParameters));
@@ -75,6 +79,8 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     selected: function() {
       return this.sensors[params.get('data').sensorId];
     },
+		selectedParameter: function() {
+		},
     selectedId: function() {
       if(!this.selected()){
         return;

@@ -6,7 +6,7 @@
     <h4 ng-click="expandables.toggle('sensor')" ng-class="expandables.css('sensor')">Parameter - Sensor</h4>
     <section ng-show="expandables.visible('sensor')" >
     <p>
-      <select ng-model="params.get('data').sensorParameter" ng-options="parameter as parameter.label for parameter in sensors.getParameters() track by parameter.id">
+      <select ng-model="params.get('data').parameterId" ng-options="parameter as parameter.label for parameter in sensors.getParameters() track by parameter.id">
         <option value="">All2</option>
       </select>
     </p>
