@@ -3,6 +3,7 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     spinner.show();
     $http.get('/api/sensors', {cache: true}).success(_(this.onSensorsFetch).bind(this));
 
+    this.selectedParameter = {label: "Particulate Matter", id: "Particulate Matter"};
     this.availableParameters = {};
     this.sensors = {};
     this.tmpSensorId = undefined;
@@ -12,6 +13,7 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
   };
   Sensors.prototype = {
     onSensorsFetch : function(data, status, headers, config) {
+      // Sensors
       var sensors = {};
       _(data).each(function(sensor){
         sensor.id = sensor.measurement_type + "-" + sensor.sensor_name + " (" + sensor.unit_symbol + ")";
@@ -24,9 +26,8 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
         sensors[sensor.id] = sensor;
       });
       this.sensors = sensors;
-      this.initSelected();
 
-
+      // Parameters
       var availableParameters = _.uniq(_(this.sensors).map(function(sensor) {
         return sensor["measurement_type"]
       }));
@@ -37,15 +38,10 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
           id: availableParameter
         });
       })
-
-      console.log(availableParameters);
-      // return availableParameters;
-      // availableParameters = [
-        // { label: "temp",      id: 1 },
-        // { label: "humidity",  id: 2 }
-      // ];
       this.availableParameters = availableParameters;
 
+      // Initialize UI
+      this.initSelected();
       spinner.hide();
     },
     initSelected: function() {
@@ -62,14 +58,12 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
           }});
         }
       }
-
-      params.get('data').parameterId = this.defaultParameter;
     },
     get: function() {
-      return _(this.sensors).filter(function(sensor) { sensor["measurement_type"] == "Particulate Matter" });
+      var self = this;
+      return _(this.sensors).filter(function(sensor) { return (sensor["measurement_type"] == self.selectedParameter.id); });
     },
     getParameters: function() {
-      console.log("returning: " + JSON.stringify(this.availableParameters));
       return this.availableParameters;
     },
     isEmpty: function() {
@@ -79,8 +73,6 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     selected: function() {
       return this.sensors[params.get('data').sensorId];
     },
-		selectedParameter: function() {
-		},
     selectedId: function() {
       if(!this.selected()){
         return;
