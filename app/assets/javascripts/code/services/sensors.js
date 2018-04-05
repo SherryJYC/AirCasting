@@ -16,8 +16,8 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
       // Sensors
       var sensors = {};
       _(data).each(function(sensor){
-        sensor.id = sensor.measurement_type + "-" + sensor.sensor_name + " (" + sensor.unit_symbol + ")";
-        sensor.label = sensor.measurement_type + "-" + sensor.sensor_name + " (" + sensor.unit_symbol + ")";
+        sensor.id =  sensor.sensor_name + " (" + sensor.unit_symbol + ")";
+        sensor.label = sensor.sensor_name + " (" + sensor.unit_symbol + ")";
         if (sensor.label.length >= 42) {
           sensor.select_label = sensor.label.slice(0, 40) + "…";
         } else {
