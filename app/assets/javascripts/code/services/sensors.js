@@ -3,13 +3,15 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     spinner.show();
     $http.get('/api/sensors', {cache: true}).success(_(this.onSensorsFetch).bind(this));
 
-    this.selectedParameter = {label: "Particulate Matter", id: "Particulate Matter"};
-    this.availableParameters = {};
     this.sensors = {};
     this.tmpSensorId = undefined;
     this.shouldInitSelected = false;
-    this.defaultSensor = "Particulate Matter-AirBeam2-PM2.5 (µg/m³)"
-    this.defaultParameter = "Particulate Matter"
+    // this.defaultSensor = "AirBeam2-PM2.5 (µg/m³)"
+    this.defaultSensor = "PPD42NS (TtPPCF)"; // FIXME
+    this.availableSensors = {};
+    this.defaultParameter = {id: "Particulate Matter", label: "Particulate Matter"};
+    this.selectedParameter = {};
+    this.availableParameters = {};
   };
   Sensors.prototype = {
     onSensorsFetch : function(data, status, headers, config) {
@@ -39,6 +41,7 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
         });
       })
       this.availableParameters = availableParameters;
+      // this.selectedParameter = this.defaultParameter;
 
       // Initialize UI
       this.initSelected();
@@ -47,6 +50,10 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     initSelected: function() {
       var self = this;
       //this is called only for injectors who verified flag - like crowd map
+
+      this.selectedParameter = this.defaultParameter;
+      this.availableSensors = _(this.sensors).filter(function(sensor) { return sensor["measurement_type"] == self.selectedParameter["id"]})
+      this.availableSensors = this.sensors;
       if(this.shouldInitSelected && !this.isEmpty() && !params.get('data').sensorId){
         if(this.defaultSensor) {
           params.update({data: {sensorId: this.defaultSensor }});
@@ -57,7 +64,12 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
             }).first().value()
           }});
         }
+        self.selectedParameter = _(self.availableParameters).find(function(parameter) { return (parameter.id == self.selected()["measurement_type"]) });
       }
+
+      console.log("Init selected: ")
+      console.log(params.get('data').sensorId)
+      console.log(this.selectedParameter)
     },
     get: function() {
       var self = this;
