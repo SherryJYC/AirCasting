@@ -21,8 +21,7 @@ module Api
     respond_to :json
 
     def index
-      # respond_with Stream.sensors
-      respond_with JSON.parse(File.read('sensors.json'))
+      respond_with Stream.sensors
     end
   end
 end
