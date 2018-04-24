@@ -48,3 +48,18 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/
 #
 #end
 # after 'deploy:publishing', 'passenger:restart'
+
+def processes_pids
+  pids = []
+  sidekiq_roles = Array(fetch(:sidekiq_role))
+  sidekiq_roles.each do |role|
+    next unless host.roles.include?(role)
+    processes = fetch(:"#{ role }_processes") || fetch(:sidekiq_processes)
+    processes.times do |idx|
+      post_fix = idx > 0 ? "-#{idx}" : ''
+      pids.push fetch(:sidekiq_pid).gsub(/\.pid$/, "#{post_fix}.pid")
+    end
+  end
+
+  pids
+end
