@@ -56,6 +56,7 @@ group :development do
   gem 'capistrano-sidekiq'
   gem 'capistrano-unicorn', require: false
   gem 'capistrano-rvm', require: false
+  gem 'capistrano-rbenv', require: false
 end
 
 group :test, :development do
