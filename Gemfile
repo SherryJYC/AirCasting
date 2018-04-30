@@ -54,7 +54,7 @@ group :development do
   gem 'capistrano-bundler', require: false
   gem 'capistrano-ext'
   gem 'capistrano-sidekiq', require: false
-  gem 'capistrano-unicorn', require: false
+  gem 'capistrano3-unicorn', require: false
   gem 'capistrano-rvm', require: false
   gem 'capistrano-rbenv', require: false
 end
