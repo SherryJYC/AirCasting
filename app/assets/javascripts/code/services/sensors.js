@@ -48,6 +48,7 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
       spinner.hide();
     },
     initSelected: function() {
+      console.log("initSelected")
       var self = this;
       //this is called only for injectors who verified flag - like crowd map
 
@@ -55,9 +56,12 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
       this.availableSensors = _(this.sensors).filter(function(sensor) { return sensor["measurement_type"] == self.selectedParameter["id"]})
       this.availableSensors = this.sensors;
       if(this.shouldInitSelected && !this.isEmpty() && !params.get('data').sensorId){
+        console.log("initSelected: if 1")
         if(this.defaultSensor) {
+          console.log("initSelected: if 2a")
           params.update({data: {sensorId: this.defaultSensor }});
         } else {
+          console.log("initSelected: if 2b")
           params.update({data: {
             sensorId: _(self.sensors).chain().keys().sortBy(function(sensorId) {
               return -1 * self.sensors[sensorId].session_count;
@@ -65,11 +69,12 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
           }});
         }
         self.selectedParameter = _(self.availableParameters).find(function(parameter) { return (parameter.id == self.selected()["measurement_type"]) });
+        console.log("initSelected: if 3")
       }
 
-      console.log("Init selected: ")
+      console.log("initSelected end")
       console.log(params.get('data').sensorId)
-      console.log(this.selectedParameter)
+      console.log(JSON.stringify(this.selectedParameter))
     },
     get: function() {
       var self = this;
@@ -113,6 +118,13 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     },
     proceedWithTmp: function() {
       params.update({tmp: {tmpSensorId: this.tmpSensorId}});
+    },
+    findSensorById: function(id) {
+      return this.sensors[id]
+    },
+    findParameterForSensor: function(sensor) {
+      console.log("findParameterForSensor: " + JSON.stringify(sensor))
+      return _(this.availableParameters).find(function(parameter) { return (parameter.id == sensor["measurement_type"]) });
     }
 
   };
