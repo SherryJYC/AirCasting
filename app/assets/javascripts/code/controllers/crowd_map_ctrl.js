@@ -129,7 +129,11 @@ function CrowdMapCtrl($scope, $http, params, heat, $window, map, sensors, expand
   $scope.$watch("sensors.selectedParameter", function(newValue, oldValue) {
     console.log("Watcher for selectedParameter");
     console.log("newValue: " + JSON.stringify(newValue));
-    sensors.availableSensors = _(sensors.sensors).filter(function(sensor) { return sensor["measurement_type"] == newValue["id"]})
+    if (newValue) {
+      sensors.availableSensors = _(sensors.sensors).filter(function(sensor) { return sensor["measurement_type"] == newValue["id"]})
+    } else {
+      sensors.availableSensors = sensors.sensors
+    }
   }, true)
 
   $scope.setDefaults();

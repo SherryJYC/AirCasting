@@ -78,7 +78,11 @@ angular.module("aircasting").factory('sensors', ['params', '$http', 'spinner', f
     },
     get: function() {
       var self = this;
-      return _(this.sensors).filter(function(sensor) { return (sensor["measurement_type"] == self.selectedParameter.id); });
+      if (self.selectedParameter) {
+        return _(this.sensors).filter(function(sensor) { return (sensor["measurement_type"] == self.selectedParameter.id); });
+      } else {
+        return (this.sensors);
+      }
     },
     getParameters: function() {
       return this.availableParameters;
